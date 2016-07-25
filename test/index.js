@@ -1,17 +1,26 @@
 var expect = require('expect.js');
 var TextDiffBinding = require('../index.js');
 
+global.document = {};
+
 describe('TextDiffBinding', function() {
   beforeEach(function() {
     // Mock an HTML text input or textarea
-    this.element = {
+    var element = this.element = {
       value: '',
       selectionStart: 0,
       selectionEnd: 0,
+      selectionDirection: 'none',
       scrollTop: 0
     };
+    element.setSelectionRange = function(selectionStart, selectionEnd, selectionDirection) {
+      element.selectionStart = selectionStart;
+      element.selectionEnd = selectionEnd;
+      element.selectionDirection = selectionDirection || 'none';
+    };
+    document.activeElement = element;
     this.value = '';
-    this.binding = new TextDiffBinding(this.element);
+    this.binding = new TextDiffBinding(element);
     var self = this;
     this.binding._get = function() {
       return self.value;

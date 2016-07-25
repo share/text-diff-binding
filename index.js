@@ -44,25 +44,25 @@ TextDiffBinding.prototype.onInput = function() {
 };
 
 TextDiffBinding.prototype.onInsert = function(index, length) {
-  var selectionStart = this._insertCursorTransform(index, length, this.element.selectionStart);
-  var selectionEnd = this._insertCursorTransform(index, length, this.element.selectionEnd);
-  this.update();
-  this.element.selectionStart = selectionStart;
-  this.element.selectionEnd = selectionEnd;
+  this._transformSelectionAndUpdate(index, length, insertCursorTransform);
 };
-TextDiffBinding.prototype._insertCursorTransform = function(index, length, cursor) {
+function insertCursorTransform(index, length, cursor) {
   return (index < cursor) ? cursor + length : cursor;
-};
+}
 
 TextDiffBinding.prototype.onRemove = function(index, length) {
-  var selectionStart = this._removeCursorTransform(index, length, this.element.selectionStart);
-  var selectionEnd = this._removeCursorTransform(index, length, this.element.selectionEnd);
-  this.update();
-  this.element.selectionStart = selectionStart;
-  this.element.selectionEnd = selectionEnd;
+  this._transformSelectionAndUpdate(index, length, removeCursorTransform);
 };
-TextDiffBinding.prototype._removeCursorTransform = function(index, length, cursor) {
+function removeCursorTransform(index, length, cursor) {
   return (index < cursor) ? cursor - Math.min(length, cursor - index) : cursor;
+}
+
+TextDiffBinding.prototype._transformSelectionAndUpdate = function(index, length, transformCursor) {
+  var selectionStart = transformCursor(index, length, this.element.selectionStart);
+  var selectionEnd = transformCursor(index, length, this.element.selectionEnd);
+  var selectionDirection = this.element.selectionDirection;
+  this.update();
+  this.element.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
 };
 
 TextDiffBinding.prototype.update = function() {
