@@ -1,6 +1,6 @@
 {
   "name": "text-diff-binding",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Base class for binding text diff data operations to and from an HTML text input or textarea",
   "repository": {
     "type": "git",
