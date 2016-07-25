@@ -58,11 +58,15 @@ function removeCursorTransform(index, length, cursor) {
 }
 
 TextDiffBinding.prototype._transformSelectionAndUpdate = function(index, length, transformCursor) {
-  var selectionStart = transformCursor(index, length, this.element.selectionStart);
-  var selectionEnd = transformCursor(index, length, this.element.selectionEnd);
-  var selectionDirection = this.element.selectionDirection;
-  this.update();
-  this.element.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+  if (document.activeElement === this.element) {
+    var selectionStart = transformCursor(index, length, this.element.selectionStart);
+    var selectionEnd = transformCursor(index, length, this.element.selectionEnd);
+    var selectionDirection = this.element.selectionDirection;
+    this.update();
+    this.element.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+  } else {
+    this.update();
+  }
 };
 
 TextDiffBinding.prototype.update = function() {

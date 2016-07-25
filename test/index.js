@@ -218,6 +218,18 @@ describe('TextDiffBinding', function() {
     expect(this.element.value).equal('x');
   });
 
+  it('does not move cursor when not the document.activeElement', function() {
+    document.activeElement = null;
+    this.value = 'x';
+    this.element.value = 'yzx';
+    this.element.selectionStart = 3;
+    this.element.selectionEnd = 3;
+    this.binding.onRemove(0, 2);
+    expect(this.element.selectionStart).equal(3);
+    expect(this.element.selectionEnd).equal(3);
+    expect(this.element.value).equal('x');
+  });
+
   it('scrolls element to same position after value update', function() {
     // Mock a DOM element where setting value affects scroll position
     this.element._value = '';
