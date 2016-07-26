@@ -97,6 +97,79 @@ describe('TextDiffBinding', function() {
     this.binding.onInput();
   });
 
+  it('inserts prior to cursor position at beginning', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 1;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(0);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('inserts prior to cursor position in middle', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 2;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(1);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('inserts prior to cursor position at end', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 3;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('only uses cursor position when element is focused', function(done) {
+    document.activeElement = null;
+    this.element.selectionStart = this.element.selectionEnd = 2;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('prefers insert at string end when ambiguous and cursor position cannot match insert', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 0;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('prefers insert at string end when ambiguous and cursor position is not usable', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = undefined;
+    this.element.value = 'xxx';
+    this.value = 'xx';
+    this.binding._insert = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
   it('calls ::_remove on single character', function(done) {
     this.value = 'x';
     this.binding._remove = function(index, text) {
@@ -135,6 +208,54 @@ describe('TextDiffBinding', function() {
     this.binding._remove = function(index, text) {
       expect(index).equal(1);
       expect(text).equal('12');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('removes prior to cursor position at beginning', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 0;
+    this.element.value = 'xx';
+    this.value = 'xxx';
+    this.binding._remove = function(index, text) {
+      expect(index).equal(0);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('removes prior to cursor position in middle', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 1;
+    this.element.value = 'xx';
+    this.value = 'xxx';
+    this.binding._remove = function(index, text) {
+      expect(index).equal(1);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('removes prior to cursor position at end', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = 2;
+    this.element.value = 'xx';
+    this.value = 'xxx';
+    this.binding._remove = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
+      done();
+    };
+    this.binding.onInput();
+  });
+
+  it('prefers remove at string end when ambiguous and cursor position is not usable', function(done) {
+    this.element.selectionStart = this.element.selectionEnd = undefined;
+    this.element.value = 'xx';
+    this.value = 'xxx';
+    this.binding._remove = function(index, text) {
+      expect(index).equal(2);
+      expect(text).equal('x');
       done();
     };
     this.binding.onInput();
