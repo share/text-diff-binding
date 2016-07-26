@@ -10,8 +10,7 @@ describe('TextDiffBinding', function() {
       value: '',
       selectionStart: 0,
       selectionEnd: 0,
-      selectionDirection: 'none',
-      scrollTop: 0
+      selectionDirection: 'none'
     };
     element.setSelectionRange = function(selectionStart, selectionEnd, selectionDirection) {
       element.selectionStart = selectionStart;
@@ -349,23 +348,5 @@ describe('TextDiffBinding', function() {
     expect(this.element.selectionStart).equal(3);
     expect(this.element.selectionEnd).equal(3);
     expect(this.element.value).equal('x');
-  });
-
-  it('scrolls element to same position after value update', function() {
-    // Mock a DOM element where setting value affects scroll position
-    this.element._value = '';
-    Object.defineProperty(this.element, 'value', {
-      get: function() {
-        return this._value;
-      },
-      set: function(value) {
-        this.scrollTop = 0;
-        this._value = value;
-      }
-    });
-    this.element.scrollTop = 10;
-    this.value = 'x';
-    this.binding.onInsert(0, 1);
-    expect(this.element.scrollTop).equal(10);
   });
 });

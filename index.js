@@ -96,9 +96,5 @@ TextDiffBinding.prototype._transformSelectionAndUpdate = function(index, length,
 TextDiffBinding.prototype.update = function() {
   var value = this._get();
   if (this._getElementValue() === value) return;
-  var scrollTop = this.element.scrollTop;
   this.element.value = value;
-  if (this.element.scrollTop !== scrollTop) {
-    this.element.scrollTop = scrollTop;
-  }
 };
